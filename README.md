@@ -146,6 +146,6 @@ All logic lives in `app.js`. All styles live in `style.css`. There is no build s
 
 **Re-analyze when you add papers.** If you get a new past paper mid-study, add it to the upload list and click Analyze again. All rankings, predictions, and the study plan update automatically.
 
-My Video Link:
+My Video Link: https://drive.google.com/file/d/1-g6qxgJcIUNp499JjyCWFlZ7SLttdChf/view?usp=drive_link
 
 My Netlify Link: resonant-paletas-093289.netlify.app
