@@ -148,4 +148,4 @@ All logic lives in `app.js`. All styles live in `style.css`. There is no build s
 
 My Video Link:
 
-My Netlify Link: paper-mentor.netlify.app
+My Netlify Link: resonant-paletas-093289.netlify.app
