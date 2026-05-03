@@ -204,3 +204,5 @@ PaperMentor works in mobile browsers. For best experience, use it on a tablet or
 ---
 
 *PaperMentor · Powered by Groq AI (llama-3.3-70b) · All Domains · 2026*
+
+Project Video Demo Link: 
