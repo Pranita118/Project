@@ -34,6 +34,8 @@ PaperMentor is an AI-powered study tool that analyzes your past exam papers and 
 
 API keys are never stored in source code. Locally, keys are loaded from a `.env` file excluded from version control. In production, keys are stored as Netlify environment variables — never exposed to the browser.
 
+Netlify link : papermentor.netlify.app
+
 Video Link : https://drive.google.com/file/d/1-g6qxgJcIUNp499JjyCWFlZ7SLttdChf/view?usp=drive_link
 
 
