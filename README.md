@@ -37,3 +37,6 @@ API keys are never stored in source code. Locally, keys are loaded from a `.env`
 ---
 
 > Built for students who want to study smarter, not harder.
+>
+> Video Link : https://drive.google.com/file/d/1-g6qxgJcIUNp499JjyCWFlZ7SLttdChf/view?usp=drive_link
+> Netlify Link : papermentor.netlify.app
