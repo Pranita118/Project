@@ -1,74 +1,39 @@
-# PaperMentor 📚
-### AI Past Paper Analyzer
+
+# 📚 PaperMentor — AI Past Paper Analyzer
+
+PaperMentor is an AI-powered study tool that analyzes your past exam papers and builds a personalized preparation plan. Upload your question papers, and the app extracts key topics, scores their importance, cross-references your syllabus, and generates a smart study plan along with practice questions — all in one place.
 
 ---
 
-## ⚡ Quickest Start (Double-click)
+## ✨ What It Does
 
-**Windows:** Double-click `start.py` (needs Python installed)  
-**Mac/Linux:** Open Terminal in this folder → `python3 start.py`
+**Paper Analysis** — Parses uploaded exam papers to extract questions and topics automatically, saving hours of manual review.
 
-Your browser will open automatically at `http://localhost:8080`
+**Topic Scoring** — Ranks topics by how frequently and heavily they appear across papers, so you know exactly where to focus your time.
 
----
+**Syllabus Cross-referencing** — Maps extracted topics against your syllabus to identify gaps and high-priority areas.
 
-## 📁 Project Structure
+**Study Plan Generation** — Builds a structured, personalized study plan based on topic importance and your available time.
 
-```
-PaperMentor/
-├── index.html      ← Main app (HTML structure)
-├── style.css       ← All styles & themes
-├── app.js          ← All logic, AI calls, analysis
-├── start.py        ← One-click local server launcher
-└── README.md       ← This file
-```
+**Practice Questions** — Generates targeted practice questions for each topic to reinforce learning and test readiness.
+
+**AI Assistant** — A built-in chat assistant answers subject-specific questions and explains concepts on demand.
 
 ---
 
-## 🚀 Three Ways to Run
+## 🧠 Powered By
 
-### Option 1 — Python (recommended, zero install)
-```bash
-python3 start.py
-```
-
-### Option 2 — VS Code Live Server
-1. Open this folder in VS Code
-2. Install "Live Server" extension
-3. Right-click `index.html` → **Open with Live Server**
-
-### Option 3 — Node.js
-```bash
-npx serve . -l 8080
-```
+- **Groq API** — Ultra-fast LLM inference for real-time paper analysis and question generation
+- **Vanilla JS** — Lightweight frontend with no heavy frameworks
+- **Python** — Simple local development server with built-in API proxy
+- **Netlify** — Zero-config deployment with serverless function support
 
 ---
 
-## ❓ Why can't I just open index.html directly?
+## 🔒 Security
 
-Browsers block API calls when you open HTML via `file://` for security reasons (CORS policy). Running a local server (any option above) takes 5 seconds and fixes this permanently.
-
----
-
-## 🔑 API Key
-
-The Groq API key is hardcoded in `app.js`:
-```js
-const GROQ_API_KEY = 'gsk_...';
-```
-Get a free key at [console.groq.com](https://console.groq.com) if the current one expires.
+API keys are never stored in source code. Locally, keys are loaded from a `.env` file excluded from version control. In production, keys are stored as Netlify environment variables — never exposed to the browser.
 
 ---
 
-## 🌐 Deploy Online (share with anyone, no server needed)
-
-**Netlify Drop** (free, instant):
-1. Go to [netlify.com/drop](https://app.netlify.com/drop)
-2. Drag this entire folder onto the page
-3. Get a public URL instantly — share it with anyone!
-
-**GitHub Pages** (free):
-1. Push this folder to a GitHub repo
-2. Go to repo Settings → Pages → Deploy from main branch
-3. Done — live at `https://username.github.io/repo-name`
-
+> Built for students who want to study smarter, not harder.
