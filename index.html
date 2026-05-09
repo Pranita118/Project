@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PaperMentor — AI Past Paper Analyzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-row">
+      <div class="brand-mark">📚</div>
+      <div>
+        <div class="brand-name">PaperMentor</div>
+        <div class="brand-sub">All Domains · Groq AI</div>
+      </div>
+    </div>
+  </div>
+  <div class="status-row">
+    <div class="status-dot"></div>
+    <span id="sideStatus">READY — No papers loaded</span>
+  </div>
+
+  <!-- Guide Section -->
+  <div class="nav-group">
+    <div class="nav-collapse-toggle open" onclick="toggleNav(this,'guide-body')">
+      <span>📖 Guide</span><span class="chevron">▲</span>
+    </div>
+    <div class="nav-collapse-body" id="guide-body">
+      <div class="nav-item active" data-page="quickstart" onclick="goto('quickstart')">
+        <span class="nav-icon">🚀</span> Quick Start
+      </div>
+      <div class="nav-item" data-page="features" onclick="goto('features')">
+        <span class="nav-icon">⚡</span> All Features
+      </div>
+      <div class="nav-item" data-page="workflow" onclick="goto('workflow')">
+        <span class="nav-icon">🔄</span> Workflow
+      </div>
+      <div class="nav-item" data-page="tips" onclick="goto('tips')">
+        <span class="nav-icon">💡</span> Tips & Tricks
+      </div>
+      <div class="nav-item" data-page="shortcuts" onclick="goto('shortcuts')">
+        <span class="nav-icon">⌨️</span> Shortcuts
+      </div>
+      <div class="nav-item" data-page="faq" onclick="goto('faq')">
+        <span class="nav-icon">❓</span> FAQ
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Upload -->
+  <div class="nav-group">
+    <div class="nav-item" data-page="upload" onclick="goto('upload')" style="font-weight:700;font-size:0.88rem;">
+      <span class="nav-icon">📤</span> Data Upload
+    </div>
+  </div>
+
+  <!-- Profiling Section -->
+  <div class="nav-group">
+    <div class="nav-collapse-toggle open" onclick="toggleNav(this,'profiling-body')">
+      <span>📊 Profiling</span><span class="chevron">▲</span>
+    </div>
+    <div class="nav-collapse-body" id="profiling-body">
+      <div class="nav-item" data-page="dashboard" onclick="goto('dashboard')">
+        <span class="nav-icon">📊</span> Overview
+      </div>
+      <div class="nav-item" data-page="topics" onclick="goto('topics')">
+        <span class="nav-icon">🏆</span> Topic Ranking
+      </div>
+      <div class="nav-item" data-page="syllabus" onclick="goto('syllabus')">
+        <span class="nav-icon">📋</span> Syllabus Map
+      </div>
+      <div class="nav-item" data-page="predict" onclick="goto('predict')">
+        <span class="nav-icon">🔮</span> Predictions
+      </div>
+      <div class="nav-item" data-page="planner" onclick="goto('planner')">
+        <span class="nav-icon">📅</span> Study Planner
+      </div>
+      <div class="nav-item" data-page="practice" onclick="goto('practice')">
+        <span class="nav-icon">✏️</span> Practice Qs
+      </div>
+      <div class="nav-item" data-page="mocktest" onclick="goto('mocktest')">
+        <span class="nav-icon">🎯</span> Mock Test
+        <span class="nav-badge" style="background:var(--red);color:#fff;">NEW</span>
+      </div>
+      <div class="nav-item" data-page="report" onclick="goto('report')">
+        <span class="nav-icon">📄</span> Report
+      </div>
+      <div class="nav-item" data-page="assistant" onclick="goto('assistant')">
+        <span class="nav-icon">✨</span> AI Assistant
+        <span class="nav-badge">AI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <p>PaperMentor · Powered by Groq AI (llama-3.3-70b)<br/>All Domains · 2026</p>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="t-ready"><div class="t-ready-dot"></div>READY</div>
+      <div style="width:1px;height:16px;background:var(--border);"></div>
+      <span class="topbar-title" id="topbarTitle">Quick Start</span>
+      <span class="topbar-badge" id="topbarBadge">START HERE</span>
+    </div>
+    <div class="topbar-right">
+      <span id="paperCount" style="font-size:0.68rem;color:var(--muted);font-family:var(--font-mono)">0 papers</span>
+      <button class="btn-sm btn-share" onclick="shareApp()">🔗 Share</button>
+      <button class="btn-sm btn-danger" onclick="resetAll()">↺ Reset</button>
+      <div class="dark-toggle" onclick="toggleDark()">
+        <span id="darkLabel">Dark</span>
+        <div class="toggle-pill"><div class="toggle-thumb"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- ═════════ PAGE: QUICK START ═════════ -->
+    <div class="page active" id="page-quickstart">
+      <div style="max-width:880px;margin:0 auto">
+        <!-- Page header banner like ModelMentor -->
+        <div class="page-header-banner">
+          <div class="page-header-title"><span class="page-header-icon">📚</span> User Guide</div>
+          <div class="page-header-sub">EVERYTHING YOU NEED TO GET THE MOST OUT OF PAPERMENTOR</div>
+        </div>
+
+        <!-- Hero card like ModelMentor welcome -->
+        <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,var(--green-light),var(--bg2));border-color:var(--green-border);">
+          <div class="welcome-hero">
+            <h1>Welcome to PaperMentor</h1>
+            <p class="hero-sub">AI ANALYSIS PLATFORM · IN-BROWSER · NO INSTALL REQUIRED</p>
+            <div class="hero-pills">
+              <span class="pill pill-muted">📄 Multi-Paper Upload</span>
+              <span class="pill pill-green">🔬 AI Pattern Analysis</span>
+              <span class="pill pill-gold">📋 Syllabus Mapping</span>
+              <span class="pill pill-blue">🏆 Topic Scoring</span>
+              <span class="pill pill-purple">📅 Study Planner</span>
+              <span class="pill pill-muted">✏️ Practice Questions</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px;">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--text);margin-bottom:16px;font-family:var(--font-mono);letter-spacing:1px;">🚀 QUICK START — UP & RUNNING IN 5 MINUTES</div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--bg3);border-radius:var(--r2);">
+              <div class="step-num" style="width:28px;height:28px;font-size:0.82rem;">1</div>
+              <div>
+                <strong style="font-size:0.9rem;">Upload your dataset</strong>
+                <p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">Click the <strong style="color:var(--green)">📤 Data Upload</strong> tab. Drag & drop PDF, image, or text files of exam papers. You can upload multiple years at once. Each file is processed entirely in your browser.</p>
+                <div style="margin-top:8px;padding:8px 12px;background:var(--gold-light);border:1px solid var(--gold-border);border-radius:6px;font-size:0.75rem;color:var(--text2);">💡 Don't have papers? Click <strong>"Load Demo"</strong> to try with a sample dataset instantly.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--bg3);border-radius:var(--r2);">
+              <div class="step-num" style="width:28px;height:28px;font-size:0.82rem;">2</div>
+              <div>
+                <strong style="font-size:0.9rem;">Configure your analysis</strong>
+                <p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">Enter your subject name, academic level, and exam date. Paste your official syllabus topics (one per line) for cross-referencing. The more context you provide, the better the AI analysis.</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--bg3);border-radius:var(--r2);">
+              <div class="step-num" style="width:28px;height:28px;font-size:0.82rem;">3</div>
+              <div>
+                <strong style="font-size:0.9rem;">Click "Analyze with AI"</strong>
+                <p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">AI reads all your papers, extracts topics, ranks them by importance, generates a personalized study plan, and creates practice questions — all automatically.</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--green-light);border:1px solid var(--green-border);border-radius:var(--r2);">
+              <div class="step-num" style="width:28px;height:28px;font-size:0.82rem;background:var(--green);">4</div>
+              <div>
+                <strong style="font-size:0.9rem;">Explore your results</strong>
+                <p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">Navigate to <strong>Overview</strong> for charts, <strong>Topic Ranking</strong> for priority scores, <strong>Syllabus Map</strong> for coverage gaps, <strong>Predictions</strong> for exam forecasts, and <strong>AI Assistant</strong> to chat about your results.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="gap:14px;">
+          <div class="card" style="text-align:center;cursor:pointer;" onclick="goto('upload')">
+            <div style="font-size:2.5rem;margin-bottom:10px;">📤</div>
+            <div style="font-family:var(--font-head);font-weight:700;font-size:1rem;margin-bottom:5px;">Upload Papers Now</div>
+            <div style="font-size:0.78rem;color:var(--muted);">Start analyzing real exam papers</div>
+            <div class="btn-sm btn-primary" style="margin:12px auto 0;display:inline-flex;">Get Started →</div>
+          </div>
+          <div class="card" style="text-align:center;cursor:pointer;" onclick="loadDemoAndAnalyze()">
+            <div style="font-size:2.5rem;margin-bottom:10px;">🎯</div>
+            <div style="font-family:var(--font-head);font-weight:700;font-size:1rem;margin-bottom:5px;">Try Demo Instantly</div>
+            <div style="font-size:0.78rem;color:var(--muted);">See all features with sample data</div>
+            <div class="btn-sm btn-outline" style="margin:12px auto 0;display:inline-flex;">Load Demo →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: FEATURES ═════════ -->
+    <div class="page" id="page-features">
+      <div style="max-width:900px;margin:0 auto">
+        <div class="sec-header">
+          <div><div class="sec-title">⚡ All Features</div><div class="sec-sub">Complete list of PaperMentor capabilities — works for every domain & exam type</div></div>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-card"><div class="feature-icon">📄</div><div><div class="feature-title">Multi-Paper Upload</div><div class="feature-desc">Upload PDF, JPG, PNG, or TXT files. Supports multiple years. Assign year labels for trend tracking.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">🔬</div><div><div class="feature-title">AI Pattern Analysis</div><div class="feature-desc">Groq AI identifies topic frequency, question types, year-wise trends, and phrasing patterns across all domains.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">📋</div><div><div class="feature-title">Syllabus Cross-Referencing</div><div class="feature-desc">Maps extracted topics against your official syllabus. Highlights coverage gaps and over-tested areas.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">🏆</div><div><div class="feature-title">Topic Importance Scoring</div><div class="feature-desc">Ranks topics by predicted exam weight based on historical frequency, recency, and difficulty trends.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">🔮</div><div><div class="feature-title">Exam Predictions</div><div class="feature-desc">AI predicts which topics are most likely to appear in your next exam based on trend analysis.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">📅</div><div><div class="feature-title">Smart Study Planner</div><div class="feature-desc">Auto-generates a prioritized study schedule based on topic importance, difficulty, and exam date.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">📊</div><div><div class="feature-title">Visual Analytics</div><div class="feature-desc">Charts for topic frequency, difficulty heatmaps, year-wise trends, and syllabus coverage donut.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">✏️</div><div><div class="feature-title">Practice Questions</div><div class="feature-desc">AI generates similar questions for high-priority topics with difficulty rating, marks, and hints.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">📄</div><div><div class="feature-title">Analysis Report</div><div class="feature-desc">Generate a downloadable HTML summary of all EDA findings, before/after comparisons, and insights.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">✨</div><div><div class="feature-title">AI Study Assistant</div><div class="feature-desc">Chat with Claude about your analysis. Ask about top topics, study tips, time allocation, and more.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">🌐</div><div><div class="feature-title">All Domains Supported</div><div class="feature-desc">Works for Engineering, Medicine, Law, Arts, Finance, Science, Competitive exams — any subject.</div></div></div>
+          <div class="feature-card"><div class="feature-icon">🌙</div><div><div class="feature-title">Dark Mode</div><div class="feature-desc">Full light/dark theme support. No data leaves your browser. No server required.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: WORKFLOW ═════════ -->
+    <div class="page" id="page-workflow">
+      <div style="max-width:700px;margin:0 auto">
+        <div class="sec-header">
+          <div><div class="sec-title">🔄 Workflow</div><div class="sec-sub">How PaperMentor processes your exam papers</div></div>
+        </div>
+        <div class="card">
+          <div class="workflow-step">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+              <div class="wf-circle" style="background:var(--green);">1</div>
+              <div class="wf-line"></div>
+            </div>
+            <div style="padding-top:6px;"><strong style="font-size:0.9rem;">Upload Past Papers</strong><p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">Add 1–10+ question papers from multiple years. Each file is parsed for questions, topics, marks, and patterns. Supports any subject or domain.</p></div>
+          </div>
+          <div class="workflow-step">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+              <div class="wf-circle" style="background:var(--gold);">2</div>
+              <div class="wf-line"></div>
+            </div>
+            <div style="padding-top:6px;"><strong style="font-size:0.9rem;">AI Topic Extraction</strong><p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">Groq AI reads all papers and extracts topics, question types, difficulty levels, marks distribution, and phrasing patterns in real-time.</p></div>
+          </div>
+          <div class="workflow-step">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+              <div class="wf-circle" style="background:var(--blue);">3</div>
+              <div class="wf-line"></div>
+            </div>
+            <div style="padding-top:6px;"><strong style="font-size:0.9rem;">Syllabus Mapping</strong><p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">Extracted topics are cross-referenced against your syllabus. Coverage percentages and gaps are identified. Topics never tested are flagged as surprise risks.</p></div>
+          </div>
+          <div class="workflow-step">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+              <div class="wf-circle" style="background:var(--purple);">4</div>
+              <div class="wf-line"></div>
+            </div>
+            <div style="padding-top:6px;"><strong style="font-size:0.9rem;">Priority Scoring</strong><p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">Each topic receives an importance score based on frequency, recency of appearance, marks weight, and difficulty trend. Topics are ranked High/Medium/Low.</p></div>
+          </div>
+          <div class="workflow-step" style="padding-bottom:0;">
+            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+              <div class="wf-circle" style="background:var(--red);">5</div>
+            </div>
+            <div style="padding-top:6px;"><strong style="font-size:0.9rem;">Insights & Study Plan</strong><p style="font-size:0.8rem;color:var(--muted);margin-top:3px;line-height:1.5;">AI ranks topics, predicts exam likelihood, generates a personalized study schedule, creates practice questions, and provides an AI assistant for on-demand help.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: TIPS ═════════ -->
+    <div class="page" id="page-tips">
+      <div style="max-width:760px;margin:0 auto">
+        <div class="sec-header"><div><div class="sec-title">💡 Tips & Tricks</div><div class="sec-sub">Get the most out of PaperMentor</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card"><strong>📅 More years = better predictions</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;line-height:1.5;">Upload at least 5 years of papers for meaningful trend analysis. 10+ years gives exceptional prediction accuracy. Label each file with its year.</p></div>
+          <div class="card"><strong>📋 Include your full syllabus</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;line-height:1.5;">Paste all official syllabus topics for complete gap analysis. Even topics that never appear in papers are valuable — they might appear this year as surprises.</p></div>
+          <div class="card"><strong>✨ Use the AI Assistant actively</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;line-height:1.5;">After analysis, ask the AI for a crash course plan, ask about specific topics, or get explanations for difficult concepts. The assistant has full context of your analysis.</p></div>
+          <div class="card"><strong>🎯 Focus on High Priority topics first</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;line-height:1.5;">High-priority topics typically cover 60–70% of exam marks. Spend 60% of study time there, 30% on medium, 10% on low priority and coverage gaps.</p></div>
+          <div class="card"><strong>🔄 Re-analyze after adding papers</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;line-height:1.5;">When you get a new past paper, add it and re-analyze. The AI recalculates all scores and predictions with the updated dataset.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: SHORTCUTS ═════════ -->
+    <div class="page" id="page-shortcuts">
+      <div style="max-width:600px;margin:0 auto">
+        <div class="sec-header"><div><div class="sec-title">⌨️ Keyboard Shortcuts</div><div class="sec-sub">Speed up your workflow</div></div></div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><kbd style="font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:4px;">Alt+U</kbd></td><td>Go to Data Upload</td></tr>
+              <tr><td><kbd style="font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:4px;">Alt+D</kbd></td><td>Go to Dashboard</td></tr>
+              <tr><td><kbd style="font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:4px;">Alt+A</kbd></td><td>Go to AI Assistant</td></tr>
+              <tr><td><kbd style="font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:4px;">Alt+R</kbd></td><td>Reset all data</td></tr>
+              <tr><td><kbd style="font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:4px;">Enter</kbd></td><td>Send chat message</td></tr>
+              <tr><td><kbd style="font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:4px;">Shift+Enter</kbd></td><td>New line in chat</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: FAQ ═════════ -->
+    <div class="page" id="page-faq">
+      <div style="max-width:760px;margin:0 auto">
+        <div class="sec-header"><div><div class="sec-title">❓ Frequently Asked Questions</div><div class="sec-sub">Common questions about PaperMentor</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card"><strong>Is my data stored anywhere?</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;">No. All file processing happens in your browser. Files are read locally. Paper content is sent to Groq AI for analysis, but nothing is stored permanently.</p></div>
+          <div class="card"><strong>What file types are supported?</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;">PDF, PNG, JPG, JPEG, and TXT files. For best results, use clear scans or digital PDFs. Handwritten papers work but with reduced accuracy.</p></div>
+          <div class="card"><strong>What subjects/domains does it support?</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;">Any domain: Engineering, Medicine, Law, Commerce, Arts, Sciences, Languages, Competitive exams (UPSC, JEE, NEET, GATE, CAT, BAR), university exams, school exams — if it's a written exam, PaperMentor can analyze it.</p></div>
+          <div class="card"><strong>How many papers should I upload?</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;">Minimum 1 paper (basic analysis), ideal 3–5 years (good trends), excellent 7–10+ years (highly accurate predictions).</p></div>
+          <div class="card"><strong>Why is the AI analysis taking time?</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:5px;">Groq AI reads all your papers and generates a comprehensive JSON analysis. For 5+ papers, this typically takes 20–60 seconds. Larger files take longer.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: UPLOAD ═════════ -->
+    <div class="page" id="page-upload">
+      <div style="max-width:960px;margin:0 auto">
+        <!-- Page header banner -->
+        <div class="page-header-banner">
+          <div class="page-header-title"><span class="page-header-icon">📤</span> Data Upload</div>
+          <div class="page-header-sub">UPLOAD YOUR DATASET TO GET STARTED — SUPPORTS PDF, IMAGES, AND TEXT FILES</div>
+        </div>
+
+        <!-- Hero like ModelMentor upload page -->
+        <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,var(--green-light),var(--bg2));border-color:var(--green-border);text-align:center;padding:32px 20px;">
+          <div style="font-family:var(--font-head);font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;color:var(--green);line-height:1.15;margin-bottom:10px;">Drop your papers.<br>Let AI do the rest.</div>
+          <div style="font-size:0.76rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:1px;">// AI Topic Extraction · Syllabus Mapping · Priority Scoring · Study Plan Generation</div>
+        </div>
+
+        <div class="upload-split">
+          <!-- Left: Drop Zone -->
+          <div class="card">
+            <div class="card-title"><span class="step-num">1</span> Upload Question Papers</div>
+            <div class="card-sub">PDF, images, or text files — multiple years supported</div>
+            <div class="upload-zone" id="dropZone" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave()">
+              <input type="file" accept=".pdf,.txt,.png,.jpg,.jpeg" multiple onchange="handleFiles(this.files)"/>
+              <div class="upload-icon">📂</div>
+              <h3>Drop dataset here or click to browse</h3>
+              <p>Your file is processed entirely in-browser. Nothing is uploaded.</p>
+              <div class="upload-hint" style="margin-top:10px;display:flex;gap:5px;justify-content:center;flex-wrap:wrap;">
+                <span class="pill pill-muted">PDF</span>
+                <span class="pill pill-muted">JPG</span>
+                <span class="pill pill-muted">PNG</span>
+                <span class="pill pill-muted">TXT</span>
+              </div>
+            </div>
+            <div id="fileList" style="margin-top:12px;"></div>
+            <button class="btn-sm btn-outline" style="margin-top:10px;width:100%;justify-content:center;" onclick="loadDemo()">📋 Load Sample Dataset (Demo)</button>
+          </div>
+
+          <!-- Right: Config -->
+          <div class="card">
+            <div class="card-title"><span class="step-num">2</span> Configure Analysis</div>
+            <div class="card-sub">Set context for better AI understanding</div>
+
+            <div class="form-group">
+              <label>Subject / Course Name</label>
+              <input id="iSubject" placeholder="e.g. Data Structures, Biochemistry, Constitutional Law…"/>
+            </div>
+            <div class="form-group">
+              <label>Academic Level / Domain</label>
+              <select id="iLevel">
+                <option value="">Select level</option>
+                <option>B.Tech / Engineering</option>
+                <option>Class 12 (CBSE/ICSE)</option>
+                <option>Class 10 (CBSE/ICSE)</option>
+                <option>BCA / BSc CS</option>
+                <option>MBBS / Medicine</option>
+                <option>LLB / Law</option>
+                <option>MBA / Management</option>
+                <option>B.Com / Commerce</option>
+                <option>BA / Arts & Humanities</option>
+                <option>BSc / Pure Sciences</option>
+                <option>JEE / NEET</option>
+                <option>UPSC / Civil Services</option>
+                <option>GATE / GRE / GMAT</option>
+                <option>CA / CFA / Actuarial</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Exam Date (for planner)</label>
+              <input type="date" id="iExamDate"/>
+            </div>
+            <div class="form-group">
+              <label>Syllabus Topics (one per line)</label>
+              <textarea id="syllabusInput" style="min-height:100px;" placeholder="e.g.&#10;Arrays and Strings&#10;Dynamic Programming&#10;Graph Theory&#10;Sorting Algorithms&#10;Hashing&#10;Trees & BST&#10;Recursion & Backtracking"></textarea>
+            </div>
+            <div style="margin-bottom:10px;">
+              <div style="font-size:0.72rem;color:var(--muted);margin-bottom:7px;">Load sample syllabus:</div>
+              <div class="toggle-group">
+                <button class="toggle-btn" onclick="loadSample('cs')">💻 CS</button>
+                <button class="toggle-btn" onclick="loadSample('math')">📐 Math</button>
+                <button class="toggle-btn" onclick="loadSample('physics')">⚛️ Physics</button>
+                <button class="toggle-btn" onclick="loadSample('bio')">🧬 Biology</button>
+                <button class="toggle-btn" onclick="loadSample('law')">⚖️ Law</button>
+                <button class="toggle-btn" onclick="loadSample('med')">🏥 Medicine</button>
+                <button class="toggle-btn" onclick="loadSample('econ')">📈 Economics</button>
+                <button class="toggle-btn" onclick="loadSample('hist')">🏛️ History</button>
+              </div>
+            </div>
+            <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">✨ Analyze with AI</button>
+          </div>
+        </div>
+
+        <div class="insight-box">
+          <span class="insight-icon">💡</span>
+          <div class="insight-text">
+            <strong>No papers?</strong> Click <strong>"Load Sample Dataset"</strong> on the left, select a sample syllabus on the right, and click <strong>"Analyze with AI"</strong> — the app runs a full demo analysis so you can explore every feature instantly. Works for any domain!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: DASHBOARD ═════════ -->
+    <div class="page" id="page-dashboard">
+      <div style="max-width:1100px;margin:0 auto">
+        <!-- Page banner -->
+        <div class="page-header-banner" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div class="page-header-title"><span class="page-header-icon">📊</span> Analysis Dashboard</div>
+            <div class="page-header-sub" id="dashSubtitle">OVERVIEW OF EXAM PATTERNS ACROSS ALL UPLOADED PAPERS</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn-sm btn-primary" onclick="goto('report')">📄 Generate Report</button>
+            <div class="toggle-group" id="yearFilterBtns"></div>
+          </div>
+        </div>
+
+        <div class="grid-4" style="margin-bottom:18px;">
+          <div class="stat-card sc-green"><div class="stat-label">Papers Analyzed</div><div class="stat-value" id="st1">0</div><div class="stat-change">↑ Multi-year coverage</div></div>
+          <div class="stat-card sc-gold"><div class="stat-label">Unique Topics</div><div class="stat-value" id="st2">0</div><div class="stat-change">Extracted by AI</div></div>
+          <div class="stat-card sc-blue"><div class="stat-label">Total Questions</div><div class="stat-value" id="st3">0</div><div class="stat-change">Across all papers</div></div>
+          <div class="stat-card sc-purple"><div class="stat-label">Syllabus Coverage</div><div class="stat-value" id="st4">0%</div><div class="stat-change">Topics mapped</div></div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:16px;">
+          <div class="card">
+            <div class="card-title">🔥 Top High-Yield Topics</div>
+            <div class="card-sub">Frequency across all years</div>
+            <div class="bar-chart" id="topicBarChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">🎯 Question Type Distribution</div>
+            <div class="card-sub">By category across papers</div>
+            <canvas id="donutCanvas" width="260" height="200"></canvas>
+            <div id="donutLegend" style="margin-top:10px;display:flex;flex-direction:column;gap:5px;"></div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:16px;">
+          <div class="card">
+            <div class="card-title">📈 Year-wise Trend</div>
+            <div class="card-sub">Topic question count per year</div>
+            <canvas id="trendCanvas" width="400" height="160"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-title">⚡ AI Key Insights</div>
+            <div class="card-sub">Observations from your exam data</div>
+            <div id="insightsList"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🌡️ Topic Frequency Heatmap</div>
+          <div class="card-sub">Visual intensity = frequency</div>
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: TOPICS ═════════ -->
+    <div class="page" id="page-topics">
+      <div style="max-width:1000px;margin:0 auto">
+        <div class="sec-header">
+          <div>
+            <div class="sec-title">🏆 Topic Importance Ranking</div>
+            <div class="sec-sub">Ranked by predicted exam weight & historical frequency</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="topicSearch" placeholder="🔍 Filter topics…" oninput="filterTopics()" style="width:180px;padding:7px 12px;font-size:0.8rem;"/>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom:18px;">
+          <div class="card" style="text-align:center;"><div style="font-size:2rem;margin-bottom:5px;font-family:var(--font-head);font-weight:800;color:var(--red);" id="highCount">0</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">High Priority</div></div>
+          <div class="card" style="text-align:center;"><div style="font-size:2rem;margin-bottom:5px;font-family:var(--font-head);font-weight:800;color:var(--gold);" id="medCount">0</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Medium Priority</div></div>
+          <div class="card" style="text-align:center;"><div style="font-size:2rem;margin-bottom:5px;font-family:var(--font-head);font-weight:800;color:var(--blue);" id="lowCount">0</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Low Priority</div></div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="data-table" id="topicTable">
+            <thead>
+              <tr><th>#</th><th>Topic</th><th>Frequency</th><th>Years</th><th>Difficulty</th><th>Priority</th><th>Score</th></tr>
+            </thead>
+            <tbody id="topicTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: SYLLABUS ═════════ -->
+    <div class="page" id="page-syllabus">
+      <div style="max-width:960px;margin:0 auto">
+        <div class="sec-header">
+          <div>
+            <div class="sec-title">📋 Syllabus Coverage Map</div>
+            <div class="sec-sub">Cross-referencing exam papers against your official syllabus</div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom:18px;">
+          <div class="stat-card sc-green"><div class="stat-label">Covered Topics</div><div class="stat-value" id="covCount">0</div><div class="stat-change">In past papers</div></div>
+          <div class="stat-card sc-gold"><div class="stat-label">Partial Coverage</div><div class="stat-value" id="partCount">0</div><div class="stat-change">Low frequency</div></div>
+          <div class="stat-card" style="--sc-color:var(--red)"><div class="stat-label">Gap Topics</div><div class="stat-value" style="color:var(--red);" id="gapCount">0</div><div class="stat-change">Never appeared</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📊 Coverage Distribution</div>
+            <div class="card-sub">Syllabus topic breakdown</div>
+            <canvas id="coverageDonut" width="260" height="200"></canvas>
+            <div id="coverageLegend" style="margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚠️ Coverage Gaps</div>
+            <div class="card-sub">Topics never tested — potential surprises</div>
+            <div id="gapsList"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title">🗺️ Full Syllabus Map</div>
+          <div class="card-sub">All topics with coverage status and percentage</div>
+          <div id="syllabusMapList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: PREDICT ═════════ -->
+    <div class="page" id="page-predict">
+      <div style="max-width:860px;margin:0 auto">
+        <div class="sec-header">
+          <div>
+            <div class="sec-title">🔮 Exam Predictions</div>
+            <div class="sec-sub">AI-powered topic probability estimates for your next exam</div>
+          </div>
+        </div>
+        <div class="insight-box" style="border-color:var(--green-border);background:var(--green-light);">
+          <span class="insight-icon">🤖</span>
+          <div class="insight-text">These predictions are based on historical frequency trends, recency of appearance, difficulty escalation patterns, and year-wise distribution analysis. Use them to prioritize, not to skip topics.</div>
+        </div>
+        <div id="predictionsList" style="margin-bottom:20px;"></div>
+        <div class="card">
+          <div class="card-title">📉 Lower Priority Topics</div>
+          <div class="card-sub">Topics with consistently low exam appearance — safe to deprioritize</div>
+          <div id="lowYieldList" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: PLANNER ═════════ -->
+    <div class="page" id="page-planner">
+      <div style="max-width:1000px;margin:0 auto">
+        <div class="sec-header">
+          <div>
+            <div class="sec-title">📅 Smart Study Planner</div>
+            <div class="sec-sub">AI-generated prioritized study schedule</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <label style="display:inline;margin-bottom:0;">Weeks:</label>
+            <input type="number" id="weekCount" value="4" min="1" max="12" style="width:60px;padding:6px 8px;" onchange="buildPlanner()"/>
+            <button class="btn-sm btn-primary" onclick="buildPlanner()">Regenerate</button>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom:18px;">
+          <div class="stat-card sc-green"><div class="stat-label">High Priority</div><div class="stat-value" id="hp1">0</div><div class="stat-change">Topics first</div></div>
+          <div class="stat-card sc-gold"><div class="stat-label">Medium Priority</div><div class="stat-value" id="hp2">0</div><div class="stat-change">Topics second</div></div>
+          <div class="stat-card sc-blue"><div class="stat-label">Study Days</div><div class="stat-value" id="hp3">0</div><div class="stat-change">Total planned</div></div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title">📆 Week 1 — Priority Schedule</div>
+          <div class="card-sub">Focus on highest-weight topics first</div>
+          <div class="week-grid" id="weekPlanGrid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Full Study Schedule</div>
+          <div class="card-sub" id="schedLabel">Complete multi-week plan</div>
+          <div id="fullSchedule" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: PRACTICE ═════════ -->
+    <div class="page" id="page-practice">
+      <div style="max-width:900px;margin:0 auto">
+        <div class="sec-header">
+          <div>
+            <div class="sec-title">✏️ Practice Questions</div>
+            <div class="sec-sub">AI-generated questions for high-priority topics</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <div class="toggle-group" id="qFilter">
+              <button class="toggle-btn active" onclick="filterQ('all',this)">All</button>
+              <button class="toggle-btn" onclick="filterQ('high',this)">🔴 High</button>
+              <button class="toggle-btn" onclick="filterQ('medium',this)">🟡 Medium</button>
+              <button class="toggle-btn" onclick="filterQ('low',this)">🔵 Low</button>
+            </div>
+            <button class="btn-sm btn-primary" onclick="generateMoreQuestions()" id="genMoreBtn">✨ Generate More with AI</button>
+          </div>
+        </div>
+
+        <!-- Generate More Panel -->
+        <div class="card" id="genMorePanel" style="display:none;margin-bottom:16px;padding:14px 18px;">
+          <div class="card-title" style="margin-bottom:10px;">✨ Generate More Questions</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+            <div style="flex:1;min-width:160px;">
+              <label>Topic (or leave blank for all)</label>
+              <input id="genTopic" placeholder="e.g. Dynamic Programming, Tort Law…"/>
+            </div>
+            <div style="min-width:110px;">
+              <label>Type</label>
+              <select id="genType">
+                <option value="mixed">Mixed</option>
+                <option value="MCQ">MCQ</option>
+                <option value="Short">Short Answer</option>
+                <option value="Long">Long Answer</option>
+                <option value="Problem">Problem</option>
+                <option value="Case Study">Case Study</option>
+                <option value="Essay">Essay</option>
+              </select>
+            </div>
+            <div style="min-width:90px;">
+              <label>Difficulty</label>
+              <select id="genDiff">
+                <option value="mixed">Mixed</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+            <div style="min-width:70px;">
+              <label>Count</label>
+              <select id="genCount">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+            <button class="btn-sm btn-primary" onclick="runGenerateQuestions()" id="runGenBtn" style="margin-bottom:1px;">🚀 Generate</button>
+          </div>
+          <div id="genStatus" style="font-size:0.75rem;color:var(--muted);margin-top:8px;display:none;"></div>
+        </div>
+
+        <div id="questionBank"></div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: MOCK TEST ═════════ -->
+    <div class="page" id="page-mocktest">
+      <div style="max-width:900px;margin:0 auto">
+
+        <!-- Setup Panel -->
+        <div id="mockSetupPanel">
+          <div class="page-header-banner">
+            <div class="page-header-title"><span class="page-header-icon">🎯</span> Mock Test</div>
+            <div class="page-header-sub">TIMED FULL-LENGTH TEST BASED ON YOUR UPLOADED PAPERS — JUST LIKE THE REAL EXAM</div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,var(--blue-light,#e8f0fe),var(--bg2));border-color:var(--blue,#4285f4)22;">
+            <div style="font-family:var(--font-head);font-size:1.3rem;font-weight:800;margin-bottom:6px;">Take a real mock exam 📝</div>
+            <div style="font-size:0.82rem;color:var(--muted);line-height:1.6;">The AI will generate a full test paper based on your uploaded papers — matching question types, marks distribution, and difficulty levels. Your answers are evaluated and scored.</div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom:16px;">
+            <div class="card">
+              <div class="card-title">⚙️ Test Configuration</div>
+              <div class="card-sub">Customize your mock exam</div>
+              <div class="form-group" style="margin-top:14px;">
+                <label>Number of Questions</label>
+                <select id="mockQCount">
+                  <option value="5">5 questions (Quick, ~15 min)</option>
+                  <option value="10" selected>10 questions (Short, ~30 min)</option>
+                  <option value="15">15 questions (Medium, ~45 min)</option>
+                  <option value="20">20 questions (Full, ~60 min)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Question Types</label>
+                <select id="mockQType">
+                  <option value="mixed">Mixed (like real paper)</option>
+                  <option value="MCQ">MCQ Only</option>
+                  <option value="Short">Short Answer Only</option>
+                  <option value="Long">Long Answer Only</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Difficulty Level</label>
+                <select id="mockDiff">
+                  <option value="mixed">Mixed (realistic)</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Time Limit (minutes)</label>
+                <input type="number" id="mockTime" value="30" min="5" max="180" />
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">📋 What to expect</div>
+              <div class="card-sub">How the mock test works</div>
+              <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;">1</div>
+                  <div style="font-size:0.82rem;color:var(--text2);line-height:1.5;"><strong>AI generates a full paper</strong> based on your uploaded documents — real exam style questions.</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;">2</div>
+                  <div style="font-size:0.82rem;color:var(--text2);line-height:1.5;"><strong>Timer counts down</strong> — just like a real exam. You can pause if needed.</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;">3</div>
+                  <div style="font-size:0.82rem;color:var(--text2);line-height:1.5;"><strong>Write your answers</strong> in the answer boxes provided for each question.</div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="width:26px;height:26px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;">4</div>
+                  <div style="font-size:0.82rem;color:var(--text2);line-height:1.5;"><strong>Submit & get AI evaluation</strong> — scored, with model answers and feedback for each question.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align:center;">
+            <button class="analyze-btn" id="startMockBtn" onclick="startMockTest()" style="max-width:340px;margin:0 auto;">
+              🎯 Generate &amp; Start Mock Test
+            </button>
+            <div id="mockGenStatus" style="font-size:0.78rem;color:var(--muted);margin-top:10px;display:none;"></div>
+          </div>
+        </div>
+
+        <!-- Test-in-progress Panel -->
+        <div id="mockTestPanel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div>
+              <div style="font-family:var(--font-head);font-size:1.2rem;font-weight:800;">📝 Mock Exam — <span id="mockSubjectLabel"></span></div>
+              <div style="font-size:0.75rem;color:var(--muted);font-family:var(--font-mono);" id="mockMetaLabel"></div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <div class="mock-timer-box" id="mockTimerBox">
+                <span style="font-size:0.65rem;color:var(--muted);display:block;text-align:center;font-family:var(--font-mono);">TIME LEFT</span>
+                <span id="mockTimerDisplay" style="font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:var(--green);">30:00</span>
+              </div>
+              <button class="btn-sm btn-outline" id="mockPauseBtn" onclick="toggleMockPause()">⏸ Pause</button>
+              <button class="btn-sm btn-primary" onclick="submitMockTest()">✅ Submit Test</button>
+              <button class="btn-sm btn-danger" onclick="cancelMockTest()">✕ Cancel</button>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div style="height:4px;background:var(--bg3);border-radius:2px;margin-bottom:18px;overflow:hidden;">
+            <div id="mockProgressBar" style="height:100%;background:var(--green);border-radius:2px;width:0%;transition:width 0.3s;"></div>
+          </div>
+
+          <div id="mockQuestionsContainer"></div>
+
+          <div style="margin-top:20px;text-align:center;">
+            <button class="analyze-btn" onclick="submitMockTest()" style="max-width:300px;margin:0 auto;">✅ Submit &amp; Get Results</button>
+          </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div id="mockResultsPanel" style="display:none;">
+          <div class="page-header-banner" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <div>
+              <div class="page-header-title"><span class="page-header-icon">📊</span> Test Results</div>
+              <div class="page-header-sub" id="mockResultSubtitle">MOCK EXAM EVALUATION</div>
+            </div>
+            <button class="btn-sm btn-primary" onclick="retakeMockTest()">🔄 Retake Test</button>
+          </div>
+
+          <!-- Score Cards -->
+          <div class="grid-4" style="margin-bottom:18px;" id="mockScoreCards"></div>
+
+          <!-- Evaluation loading -->
+          <div id="mockEvalLoading" style="text-align:center;padding:30px;" class="card">
+            <div class="spinner" style="margin:0 auto 14px;"></div>
+            <div style="font-size:0.88rem;color:var(--muted);">AI is evaluating your answers…</div>
+          </div>
+
+          <!-- Detailed Results -->
+          <div id="mockDetailedResults" style="display:none;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: REPORT ═════════ -->
+    <div class="page" id="page-report">
+      <div style="max-width:960px;margin:0 auto">
+        <div class="page-header-banner" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div class="page-header-title"><span class="page-header-icon">📄</span> Analysis Report</div>
+            <div class="page-header-sub">GENERATE A DOWNLOADABLE HTML OR PDF SUMMARY OF YOUR EDA FINDINGS</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-sm btn-primary" onclick="downloadReport()">⬇ Download HTML</button>
+            <button class="btn-sm btn-outline" onclick="window.print()">🖨 Print/PDF</button>
+          </div>
+        </div>
+
+        <div id="reportContent">
+          <div class="empty"><div class="empty-icon">📄</div><p>Analyze your papers first to generate the report</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════ PAGE: AI ASSISTANT ═════════ -->
+    <div class="page" id="page-assistant">
+      <div style="max-width:800px;margin:0 auto">
+        <!-- Page header banner like ModelMentor AI Assistant -->
+        <div class="page-header-banner" style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div class="page-header-title"><span class="page-header-icon">✨</span> AI Assistant</div>
+            <div class="page-header-sub">CHAT FREELY — GREETINGS, DATASET QUESTIONS, STUDY ADVICE, CODE GENERATION, ANYTHING</div>
+          </div>
+          <button class="btn-sm btn-danger" onclick="clearChat()" style="background:#e74c3c;color:#fff;border:none;">🗑 Clear Chat</button>
+        </div>
+
+        <!-- Groq API Status -->
+        <div class="card" style="margin-bottom:14px;padding:12px 18px;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted);font-family:var(--font-mono);white-space:nowrap;">⚡ AI PROVIDER</div>
+            <div style="background:var(--green-light);border:1px solid var(--green-border);border-radius:7px;padding:5px 14px;font-family:var(--font-mono);font-size:0.78rem;color:var(--green);font-weight:700;">Groq · llama-3.3-70b-versatile</div>
+            <div id="aiStatusDot" style="display:flex;align-items:center;gap:5px;font-size:0.68rem;color:var(--muted);font-family:var(--font-mono);">
+              <div style="width:8px;height:8px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite;" id="apiDot"></div>
+              <span id="apiStatus">Groq Active ✓</span>
+            </div>
+            <div style="margin-left:auto;font-size:0.68rem;color:var(--muted);">All domains supported · Unlimited questions</div>
+          </div>
+        </div>
+
+        <!-- Quick chips -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+          <button class="toggle-btn" onclick="quickChat('What are my top 5 topics to study?')">🏆 Top topics?</button>
+          <button class="toggle-btn" onclick="quickChat('What are the coverage gaps in my syllabus?')">📋 Coverage gaps?</button>
+          <button class="toggle-btn" onclick="quickChat('Give me a 2-week crash study plan based on the analysis')">⚡ Crash plan?</button>
+          <button class="toggle-btn" onclick="quickChat('Explain the most difficult topic in this subject in simple terms')">🧠 Explain hardest topic</button>
+          <button class="toggle-btn" onclick="quickChat('What question types appear most often and how do I answer them?')">✍️ Question strategies</button>
+          <button class="toggle-btn" onclick="quickChat('Which topics are likely to appear in the next exam?')">🔮 Predictions?</button>
+          <button class="toggle-btn" onclick="quickChat('Generate 5 practice questions on the highest priority topic')">📝 Practice questions</button>
+        </div>
+
+        <div class="chat-wrap">
+          <div class="chat-msgs" id="chatMsgs">
+            <div class="msg ai">👋 Hi! I'm your AI study assistant powered by Groq (llama-3.3-70b). I support ALL domains — Engineering, Medicine, Law, Arts, Commerce, Sciences, and more. Upload papers and analyze them, then ask me anything about topics, study plans, or practice questions!</div>
+          </div>
+          <div class="chat-input-row">
+            <textarea class="chat-input" id="chatInput" rows="1" placeholder="Type anything… (Enter to send, Shift+Enter for new line)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+            <button class="chat-send" onclick="sendChat()">Send ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="load-text" id="loadingText">Analyzing Papers...</div>
+  <div class="load-sub" id="loadingSub">Groq AI is reading your exam papers</div>
+  <div class="load-steps">
+    <div class="load-step active" id="ls1">📄 Parsing uploaded papers…</div>
+    <div class="load-step" id="ls2">🔍 Extracting topics & questions…</div>
+    <div class="load-step" id="ls3">📋 Cross-referencing syllabus…</div>
+    <div class="load-step" id="ls4">🏆 Scoring topic importance…</div>
+    <div class="load-step" id="ls5">📅 Generating study plan…</div>
+    <div class="load-step" id="ls6">✏️ Creating practice questions…</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+
+<script src="app.js"></script>
+</body>
+</html>
